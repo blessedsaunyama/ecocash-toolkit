@@ -50,10 +50,11 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
+      const callbackUrl = `${window.location.origin}/api/callback`;
       const response = await fetch('/api/pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify({...values, callbackUrl}),
       });
 
       const result = await response.json();
@@ -61,6 +62,10 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
 
       if (response.ok && result.success) {
         form.reset();
+        toast({
+          title: 'Callback initiated',
+          description: 'The transaction is processing and a callback will be sent.',
+        });
       }
 
     } catch (error) {
@@ -146,6 +151,7 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
                 </FormItem>
               )}
             />
+            <FormDescription>A callback will be sent to /api/callback upon completion.</FormDescription>
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={isSubmitting} className="w-full">

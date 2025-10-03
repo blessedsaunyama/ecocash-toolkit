@@ -3,7 +3,7 @@ import { EcoCashPayment } from '@/lib/ecocash-sdk';
 
 export async function POST(request: Request) {
   try {
-    const { phone, amount, description, currency } = await request.json();
+    const { phone, amount, description, currency, callbackUrl } = await request.json();
 
     if (!process.env.ECOCASH_API_KEY) {
       throw new Error('ECOCASH_API_KEY is not set in .env.local');
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       environment: 'sandbox',
     });
 
-    const result = await ecoCash.pay({ phone, amount: Number(amount), description, currency });
+    const result = await ecoCash.pay({ phone, amount: Number(amount), description, currency, callbackUrl });
 
     return NextResponse.json(result);
   } catch (error) {

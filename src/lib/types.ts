@@ -3,5 +3,5 @@ export interface TransactionResult {
   data?: Record<string, any>;
   error?: string;
   timestamp: string;
-  type: 'Payment' | 'Lookup' | 'Refund';
+  type: 'Payment' | 'Lookup' | 'Refund' | 'Callback';
 }

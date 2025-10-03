@@ -22,7 +22,7 @@ class EcoCashBase {
 }
 
 export class EcoCashPayment extends EcoCashBase {
-  async pay(params: { phone: string; amount: number; description: string; currency: string }) {
+  async pay(params: { phone: string; amount: number; description: string; currency: string; callbackUrl?: string }) {
     await delay(Math.random() * 1000 + 500);
 
     // Simulate validation
@@ -35,11 +35,31 @@ export class EcoCashPayment extends EcoCashBase {
       return { success: false, error: 'Payment failed: Insufficient funds.' };
     }
 
+    const reference = `REF${Date.now()}`;
+    const transactionId = `ECP${Date.now()}`;
+
+    // If a callback URL is provided, simulate the callback
+    if (params.callbackUrl) {
+      // Don't wait for the callback to complete
+      fetch(params.callbackUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'SUCCESSFUL',
+          reference,
+          transactionId,
+          message: 'Payment was successful.',
+        }),
+      }).catch(console.error);
+    }
+    
     return {
       success: true,
       data: {
-        transactionId: `ECP${Date.now()}`,
-        reference: `REF${Date.now()}`,
+        transactionId,
+        reference,
         status: 'PENDING',
         message: 'Payment initiated. Customer needs to approve on their phone.',
         ...params,
