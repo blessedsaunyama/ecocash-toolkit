@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Copy } from 'lucide-react';
 
 import type { TransactionResult } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -35,7 +35,13 @@ type PaymentFormProps = {
 
 export function PaymentForm({ onResult }: PaymentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [callbackUrl, setCallbackUrl] = useState('');
   const { toast } = useToast();
+
+  useEffect(() => {
+    // This code runs only in the browser, ensuring window is defined.
+    setCallbackUrl(`${window.location.origin}/api/callback`);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,7 +56,6 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const callbackUrl = `${window.location.origin}/api/callback`;
       const response = await fetch('/api/pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,6 +85,14 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
       setIsSubmitting(false);
     }
   }
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(callbackUrl);
+    toast({
+      title: 'Copied to clipboard!',
+      description: 'The callback URL has been copied.',
+    });
+  };
 
   return (
     <>
@@ -151,7 +164,16 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
                 </FormItem>
               )}
             />
-            <FormDescription>A callback will be sent to /api/callback upon completion.</FormDescription>
+            <div>
+              <FormLabel>Your Public Callback URL</FormLabel>
+              <div className="flex items-center space-x-2 mt-1">
+                <Input readOnly value={callbackUrl} className="bg-muted/50" />
+                <Button type="button" variant="outline" size="icon" onClick={handleCopy} disabled={!callbackUrl}>
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <FormDescription>Use this URL as the webhook in the EcoCash developer platform.</FormDescription>
+            </div>
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={isSubmitting} className="w-full">
