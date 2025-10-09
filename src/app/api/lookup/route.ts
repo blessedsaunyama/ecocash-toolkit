@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { EcoCashTransaction } from 'ecocash-payment-sdk-js';
+import { EcoCashTransaction } from 'ecocash-payment-sdk';
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,7 +23,10 @@ export async function GET(request: NextRequest) {
       environment: 'sandbox',
     });
 
-    const result = await ecoCash.lookup({ phone, reference });
+    const result = await ecoCash.lookupTransaction({
+      sourceMobileNumber: phone,
+      sourceReference: reference,
+    });
 
     return NextResponse.json(result);
   } catch (error) {

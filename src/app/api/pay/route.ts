@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { EcoCashPayment } from 'ecocash-payment-sdk-js';
-import { v4 as uuidv4 } from 'uuid';
-
+import { EcoCashPayment } from 'ecocash-payment-sdk';
 
 export async function POST(request: Request) {
   try {
@@ -16,15 +14,12 @@ export async function POST(request: Request) {
       environment: 'sandbox',
     });
 
-    const sourceReference = uuidv4();
-
-    const result = await ecoCash.pay({ 
-        customerMsisdn: phone, 
-        amount: Number(amount), 
-        reason: description, 
-        currency, 
-        callbackUrl,
-        sourceReference
+    const result = await ecoCash.makePayment({
+      customerEcocashPhoneNumber: phone,
+      amount: Number(amount),
+      description: description,
+      currency,
+      callbackUrl,
     });
 
     return NextResponse.json(result);

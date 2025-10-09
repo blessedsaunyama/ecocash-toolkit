@@ -21,6 +21,7 @@ import { CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/
 import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
+  phone: z.string().min(9, "Phone number is required.").regex(/^\d+$/, "Phone number must be digits only."),
   reference: z.string().min(5, "Transaction reference is required."),
   amount: z.coerce.number().positive("Amount must be positive."),
 });
@@ -36,6 +37,7 @@ export function RefundForm({ onResult }: RefundFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      phone: '',
       reference: '',
       amount: 0,
     },
@@ -78,6 +80,19 @@ export function RefundForm({ onResult }: RefundFormProps) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
+             <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Original Customer Phone</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., 263772123456" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="reference"
@@ -85,7 +100,7 @@ export function RefundForm({ onResult }: RefundFormProps) {
                 <FormItem>
                   <FormLabel>Original Transaction Reference</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., REF1678886400000" {...field} />
+                    <Input placeholder="e.g., ET210106.1058.056220" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
