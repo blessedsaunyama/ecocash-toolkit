@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { EcoCashRefund } from '@/lib/ecocash-sdk';
+import { EcoCashRefund } from 'ecocash-payment-sdk-js';
 
 export async function POST(request: Request) {
   try {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { EcoCashTransaction } from '@/lib/ecocash-sdk';
+import { EcoCashTransaction } from 'ecocash-payment-sdk-js';
 
 export async function GET(request: NextRequest) {
   try {
