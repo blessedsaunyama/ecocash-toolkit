@@ -59,7 +59,7 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
       const response = await fetch('/api/pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({...values, callbackUrl}),
+        body: JSON.stringify(values), // No longer sending callbackUrl
       });
 
       const result = await response.json();
@@ -70,6 +70,12 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
         toast({
           title: 'Callback initiated',
           description: 'The transaction is processing and a callback will be sent.',
+        });
+      } else if (!result.success) {
+        toast({
+          variant: 'destructive',
+          title: 'Payment Failed',
+          description: result.error || 'An unknown error occurred.',
         });
       }
 
@@ -87,11 +93,13 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
   }
   
   const handleCopy = () => {
-    navigator.clipboard.writeText(callbackUrl);
-    toast({
-      title: 'Copied to clipboard!',
-      description: 'The callback URL has been copied.',
-    });
+    if (callbackUrl) {
+      navigator.clipboard.writeText(callbackUrl);
+      toast({
+        title: 'Copied to clipboard!',
+        description: 'The callback URL has been copied.',
+      });
+    }
   };
 
   return (

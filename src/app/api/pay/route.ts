@@ -3,7 +3,7 @@ import { EcoCashPayment } from 'ecocash-payment-sdk';
 
 export async function POST(request: Request) {
   try {
-    const { phone, amount, description, currency, callbackUrl } = await request.json();
+    const { phone, amount, description, currency } = await request.json();
 
     if (!process.env.ECOCASH_API_KEY) {
       throw new Error('ECOCASH_API_KEY is not set in .env.local');
@@ -14,12 +14,13 @@ export async function POST(request: Request) {
       environment: 'sandbox',
     });
 
+    // According to the SDK docs, sourceReference is auto-generated if not provided.
+    // The callbackUrl should be configured on the EcoCash developer portal, not sent in the request body.
     const result = await ecoCash.makePayment({
       customerEcocashPhoneNumber: phone,
       amount: Number(amount),
       description: description,
       currency,
-      callbackUrl,
     });
 
     return NextResponse.json(result);
