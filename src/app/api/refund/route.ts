@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { reference, amount, phone } = await request.json();
 
     if (!process.env.ECOCASH_API_KEY) {
-      throw new Error('ECOCASH_API_KEY is not set in .env.local');
+      throw new Error('ECOCASH_API_KEY is not set on the server.');
     }
 
     const ecoCash = new EcoCashRefund({
@@ -17,22 +17,24 @@ export async function POST(request: Request) {
 
     const refundCorrelator = uuidv4();
 
-    // Using the parameters from the SDK docs
+    // The SDK documentation has different parameter names than the raw API docs.
+    // We will trust the SDK's parameter names.
     const result = await ecoCash.requestRefund({
       originalEcocashTransactionReference: reference,
       refundCorrelator: refundCorrelator,
       sourceMobileNumber: phone,
       amount: Number(amount),
-      clientName: 'EcoCash Toolkit', // As per SDK docs
+      clientName: 'EcoCash Toolkit',
       currency: 'USD', 
       reasonForRefund: 'User requested refund from toolkit',
     });
 
     return NextResponse.json(result);
+
   } catch (error) {
-    console.error('Refund API Error:', error);
+    console.error('Refund API Unhandled Error:', error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' },
+      { success: false, error: error instanceof Error ? error.message : 'An unknown server error occurred' },
       { status: 500 }
     );
   }

@@ -7,7 +7,8 @@ export async function POST(request: Request) {
     const { phone, amount, description, currency } = await request.json();
 
     if (!process.env.ECOCASH_API_KEY) {
-      throw new Error('ECOCASH_API_KEY is not set in .env.local');
+      // This error will be caught by the catch block
+      throw new Error('ECOCASH_API_KEY is not set on the server.');
     }
 
     const ecoCash = new EcoCashPayment({
@@ -20,20 +21,19 @@ export async function POST(request: Request) {
     const result = await ecoCash.makePayment({
       customerEcocashPhoneNumber: phone,
       amount: Number(amount),
-      description: description, // The SDK should map this to 'reason' if needed. The SDK docs use 'description'.
+      description: description,
       currency,
-      sourceReference, // Added this as it's required.
+      sourceReference,
     });
+    
+    // The SDK returns its own success/error object. We pass it along.
+    return NextResponse.json(result);
 
-    // The SDK's response object might be different from the raw API.
-    // We adapt it to what our frontend expects.
-    const success = result.status === 'SUCCESS' || result.success;
-
-    return NextResponse.json({ ...result, success });
   } catch (error) {
-    console.error('Payment API Error:', error);
+    console.error('Payment API Unhandled Error:', error);
+    // If any error happens before or during the SDK call, return a structured JSON error
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' },
+      { success: false, error: error instanceof Error ? error.message : 'An unknown server error occurred.' },
       { status: 500 }
     );
   }

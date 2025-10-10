@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (!process.env.ECOCASH_API_KEY) {
-      throw new Error('ECOCASH_API_KEY is not set in .env.local');
+      throw new Error('ECOCASH_API_KEY is not set on the server.');
     }
 
     const ecoCash = new EcoCashTransaction({
@@ -29,10 +29,11 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(result);
+    
   } catch (error) {
-    console.error('Lookup API Error:', error);
+    console.error('Lookup API Unhandled Error:', error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' },
+      { success: false, error: error instanceof Error ? error.message : 'An unknown server error occurred.' },
       { status: 500 }
     );
   }
