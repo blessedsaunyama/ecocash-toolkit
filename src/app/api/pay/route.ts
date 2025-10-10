@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { phone, amount, description, currency } = await request.json();
 
     if (!process.env.ECOCASH_API_KEY) {
-      // This error will be caught by the catch block
+      console.error('Payment API Error: ECOCASH_API_KEY is not set.');
       throw new Error('ECOCASH_API_KEY is not set on the server.');
     }
 
@@ -26,6 +26,10 @@ export async function POST(request: Request) {
       sourceReference,
     });
     
+    if (!result.success) {
+      console.error('Ecocash SDK Payment Error:', result);
+    }
+
     // The SDK returns its own success/error object. We pass it along.
     return NextResponse.json(result);
 

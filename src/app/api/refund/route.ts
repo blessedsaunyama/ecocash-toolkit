@@ -7,6 +7,7 @@ export async function POST(request: Request) {
     const { reference, amount, phone } = await request.json();
 
     if (!process.env.ECOCASH_API_KEY) {
+      console.error('Refund API Error: ECOCASH_API_KEY is not set.');
       throw new Error('ECOCASH_API_KEY is not set on the server.');
     }
 
@@ -28,6 +29,10 @@ export async function POST(request: Request) {
       currency: 'USD', 
       reasonForRefund: 'User requested refund from toolkit',
     });
+
+    if (!result.success) {
+      console.error('Ecocash SDK Refund Error:', result);
+    }
 
     return NextResponse.json(result);
 

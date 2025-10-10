@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (!process.env.ECOCASH_API_KEY) {
+      console.error('Lookup API Error: ECOCASH_API_KEY is not set.');
       throw new Error('ECOCASH_API_KEY is not set on the server.');
     }
 
@@ -27,6 +28,10 @@ export async function GET(request: NextRequest) {
       sourceMobileNumber: phone,
       sourceReference: reference,
     });
+    
+    if (!result.success) {
+        console.error('Ecocash SDK Lookup Error:', result);
+    }
 
     return NextResponse.json(result);
     
