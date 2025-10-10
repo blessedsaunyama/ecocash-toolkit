@@ -1,4 +1,3 @@
-'use client';
 import { NextRequest, NextResponse } from 'next/server';
 import { EcoCashTransaction } from 'ecocash-payment-sdk';
 

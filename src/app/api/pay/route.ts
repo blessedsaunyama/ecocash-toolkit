@@ -1,4 +1,3 @@
-'use client';
 import { NextResponse } from 'next/server';
 import { EcoCashPayment } from 'ecocash-payment-sdk';
 import { v4 as uuidv4 } from 'uuid';
