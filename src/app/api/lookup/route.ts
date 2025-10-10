@@ -1,3 +1,4 @@
+'use client';
 import { NextRequest, NextResponse } from 'next/server';
 import { EcoCashTransaction } from 'ecocash-payment-sdk';
 
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
+    console.error('Lookup API Error:', error);
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' },
       { status: 500 }

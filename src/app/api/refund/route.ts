@@ -1,3 +1,4 @@
+'use client';
 import { NextResponse } from 'next/server';
 import { EcoCashRefund } from 'ecocash-payment-sdk';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,18 +18,20 @@ export async function POST(request: Request) {
 
     const refundCorrelator = uuidv4();
 
+    // Using the parameters from the SDK docs
     const result = await ecoCash.requestRefund({
       originalEcocashTransactionReference: reference,
-      amount: Number(amount),
+      refundCorrelator: refundCorrelator,
       sourceMobileNumber: phone,
-      refundCorrelator,
-      clientName: 'EcoCash Toolkit',
-      currency: 'USD', // Assuming USD for now, could be dynamic
+      amount: Number(amount),
+      clientName: 'EcoCash Toolkit', // As per SDK docs
+      currency: 'USD', 
       reasonForRefund: 'User requested refund from toolkit',
     });
 
     return NextResponse.json(result);
   } catch (error) {
+    console.error('Refund API Error:', error);
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' },
       { status: 500 }
