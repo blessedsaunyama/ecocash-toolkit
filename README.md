@@ -1,36 +1,39 @@
 # 🧰 EcoCash Toolkit — Developer Dashboard
 
-This project is a **developer toolkit and testing dashboard** for the [EcoCash Payment SDK](https://github.com/Unfiltered-On-GH/Ecocash-Payment-SDK-JS).  
-It provides a clean, user-friendly web interface to test and debug EcoCash API integrations without manually writing code for every request.
+The **EcoCash Toolkit** is a developer-friendly web dashboard for testing and integrating the [EcoCash Payment SDK](https://github.com/Unfiltered-On-GH/Ecocash-Payment-SDK-JS.git),  
+an open-source Node.js library created by [**Tafadzwa Mabika**](https://github.com/Unfiltered-On-GH).  
+
+This toolkit provides a modern, easy-to-use interface for developers to **interact with the EcoCash API** — allowing quick testing of payments, lookups, and refunds without manually writing code for every scenario.
 
 ---
 
 ## 🌐 Live Demo
 
 **Hosted on Vercel:**  
-🔗 [Coming Soon — Live Demo will be available after testing](#)
+🔗 [Coming Soon — Link will be available once testing is complete](#)
 
 ---
 
 ## 🚀 Key Features
 
 - **💸 Make Payments (C2B):**  
-  Initiate Customer-to-Business transactions with instant response feedback.
+  Initiate Customer-to-Business transactions and see immediate feedback.
 
 - **🔍 Lookup Transactions:**  
-  Check transaction details and statuses using reference numbers.
+  Check the status and details of past transactions using their unique reference numbers.
 
 - **↩️ Process Refunds:**  
-  Request refunds for completed transactions and view their results in real-time.
+  Request refunds for completed transactions and track their progress.
 
 - **🧾 Live API Responses:**  
-  See raw JSON responses from the EcoCash API directly on the dashboard for easy debugging.
+  Instantly view raw JSON responses returned from the EcoCash API for every transaction.
 
 - **📜 Transaction Logging:**  
-  Automatically logs your most recent test transactions, showing whether they succeeded or failed.
+  Automatically log your recent transaction attempts, including their success or failure status.
 
 - **🌐 Public Callback URL Display:**  
-  Shows the correct webhook URL for your current environment (local or deployed), so you can copy it straight into your EcoCash Developer Portal.
+  Automatically detect and display your current public webhook URL (local or deployed),  
+  making it easy to copy into your EcoCash Developer Portal configuration.
 
 ---
 
@@ -40,7 +43,7 @@ It provides a clean, user-friendly web interface to test and debug EcoCash API i
 |-------|-------------|
 | Frontend | **Next.js 14**, **React**, **TypeScript** |
 | Styling | **Tailwind CSS**, **shadcn/ui** |
-| Backend / API Routes | **EcoCash Payment SDK (Node.js)** |
+| Backend / API Routes | **EcoCash Payment SDK (Node.js)** by [**Tafadzwa Mabika**](https://github.com/Unfiltered-On-GH/Ecocash-Payment-SDK-JS.git) |
 | Hosting | **Vercel** |
 | Configuration | `.env.local` for secure API keys |
 
