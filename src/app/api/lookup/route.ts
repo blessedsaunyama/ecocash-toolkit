@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
     
     if (!process.env.ECOCASH_API_KEY) {
       console.error('Lookup API Error: ECOCASH_API_KEY is not set.');
-      throw new Error('ECOCASH_API_KEY is not set on the server.');
+      return NextResponse.json(
+          { success: false, error: 'Server is not configured for lookups.' },
+          { status: 500 }
+      );
     }
 
     const ecoCash = new EcoCashTransaction({
@@ -24,14 +27,16 @@ export async function GET(request: NextRequest) {
       environment: 'sandbox',
     });
 
-    const result = await ecoCash.lookupTransaction({
+    const lookupRequest = {
       sourceMobileNumber: phone,
       sourceReference: reference,
-    });
+    };
+
+    console.log('Attempting EcoCash lookup with data:', lookupRequest);
+
+    const result = await ecoCash.lookupTransaction(lookupRequest);
     
-    if (!result.success) {
-        console.error('Ecocash SDK Lookup Error:', result);
-    }
+    console.log('Ecocash SDK Lookup Response:', result);
 
     return NextResponse.json(result);
     

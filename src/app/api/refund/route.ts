@@ -8,7 +8,10 @@ export async function POST(request: Request) {
 
     if (!process.env.ECOCASH_API_KEY) {
       console.error('Refund API Error: ECOCASH_API_KEY is not set.');
-      throw new Error('ECOCASH_API_KEY is not set on the server.');
+      return NextResponse.json(
+          { success: false, error: 'Server is not configured for refunds.' },
+          { status: 500 }
+      );
     }
 
     const ecoCash = new EcoCashRefund({
@@ -16,23 +19,21 @@ export async function POST(request: Request) {
       environment: 'sandbox',
     });
 
-    const refundCorrelator = uuidv4();
-
-    // The SDK documentation has different parameter names than the raw API docs.
-    // We will trust the SDK's parameter names.
-    const result = await ecoCash.requestRefund({
-      originalEcocashTransactionReference: reference,
-      refundCorrelator: refundCorrelator,
+    const refundRequest = {
+      originalEcocashTransactionReference: reference, // Correct spelling as per SDK docs
+      refundCorrelator: uuidv4(), // Correct spelling as per SDK docs
       sourceMobileNumber: phone,
       amount: Number(amount),
       clientName: 'EcoCash Toolkit',
       currency: 'USD', 
       reasonForRefund: 'User requested refund from toolkit',
-    });
+    };
+    
+    console.log('Attempting EcoCash refund with data:', refundRequest);
 
-    if (!result.success) {
-      console.error('Ecocash SDK Refund Error:', result);
-    }
+    const result = await ecoCash.requestRefund(refundRequest);
+
+    console.log('Ecocash SDK Refund Response:', result);
 
     return NextResponse.json(result);
 

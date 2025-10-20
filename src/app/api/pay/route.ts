@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { EcoCashPayment } from 'ecocash-payment-sdk';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {
   try {
@@ -8,29 +7,34 @@ export async function POST(request: Request) {
 
     if (!process.env.ECOCASH_API_KEY) {
       console.error('Payment API Error: ECOCASH_API_KEY is not set.');
-      throw new Error('ECOCASH_API_KEY is not set on the server.');
+      // This error is for the developer, not the user.
+      return NextResponse.json(
+        { success: false, error: 'Server is not configured for payments.' },
+        { status: 500 }
+      );
     }
 
     const ecoCash = new EcoCashPayment({
       apiKey: process.env.ECOCASH_API_KEY,
       environment: 'sandbox',
-    });
-
-    const sourceReference = uuidv4();
-
-    const result = await ecoCash.makePayment({
-      customerEcocashPhoneNumber: phone,
-      amount: Number(amount),
-      description: description,
-      currency,
-      sourceReference,
+      autoGenerateReference: true, // Let SDK handle reference
     });
     
-    if (!result.success) {
-      console.error('Ecocash SDK Payment Error:', result);
-    }
+    const paymentRequest = {
+      customerEcocashPhoneNumber: phone,
+      amount: Number(amount),
+      description: description, // Using `description` as per SDK docs
+      currency,
+    };
+
+    console.log('Attempting EcoCash payment with data:', paymentRequest);
+
+    const result = await ecoCash.makePayment(paymentRequest);
+    
+    console.log('EcoCash SDK Payment Response:', result);
 
     // The SDK returns its own success/error object. We pass it along.
+    // The result object from the SDK already contains the necessary details.
     return NextResponse.json(result);
 
   } catch (error) {
