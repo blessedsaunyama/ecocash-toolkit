@@ -57,9 +57,12 @@ export function RefundForm({ onResult }: RefundFormProps) {
       
       if(response.ok && result.success) {
         form.reset();
+      } else if (!result.success) {
+        console.error("Refund API Error:", result);
       }
 
     } catch (error) {
+      console.error("Fetch Error:", error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown network error occurred.';
       toast({
         variant: 'destructive',

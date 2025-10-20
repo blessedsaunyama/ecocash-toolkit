@@ -59,7 +59,7 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
       const response = await fetch('/api/pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values), // No longer sending callbackUrl
+        body: JSON.stringify(values),
       });
 
       const result = await response.json();
@@ -72,6 +72,7 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
           description: 'The transaction is processing and a callback will be sent.',
         });
       } else if (!result.success) {
+        console.error("Payment API Error:", result);
         toast({
           variant: 'destructive',
           title: 'Payment Failed',
@@ -80,6 +81,7 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
       }
 
     } catch (error) {
+      console.error("Fetch Error:", error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown network error occurred.';
       toast({
         variant: 'destructive',

@@ -52,9 +52,12 @@ export function LookupForm({ onResult }: LookupFormProps) {
 
       if (response.ok && result.success) {
         // Do not reset form on successful lookup
+      } else if (!result.success) {
+        console.error("Lookup API Error:", result);
       }
 
     } catch (error) {
+      console.error("Fetch Error:", error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown network error occurred.';
       toast({
         variant: 'destructive',
