@@ -57,8 +57,8 @@ export function RefundForm({ onResult }: RefundFormProps) {
       
       if(response.ok && result.success) {
         form.reset();
-      } else if (!result.success) {
-        console.error("Refund API Error:", result);
+      } else {
+        console.error("Refund API Error:", JSON.stringify(result, null, 2));
       }
 
     } catch (error) {

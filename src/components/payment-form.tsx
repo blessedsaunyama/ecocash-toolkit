@@ -71,8 +71,8 @@ export function PaymentForm({ onResult }: PaymentFormProps) {
           title: 'Callback initiated',
           description: 'The transaction is processing and a callback will be sent.',
         });
-      } else if (!result.success) {
-        console.error("Payment API Error:", result);
+      } else {
+        console.error("Payment API Error:", JSON.stringify(result, null, 2));
         toast({
           variant: 'destructive',
           title: 'Payment Failed',

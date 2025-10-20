@@ -52,8 +52,8 @@ export function LookupForm({ onResult }: LookupFormProps) {
 
       if (response.ok && result.success) {
         // Do not reset form on successful lookup
-      } else if (!result.success) {
-        console.error("Lookup API Error:", result);
+      } else {
+        console.error("Lookup API Error:", JSON.stringify(result, null, 2));
       }
 
     } catch (error) {
